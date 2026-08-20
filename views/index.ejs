@@ -94,6 +94,15 @@
             color: #888;
             font-size: 12px;
         }
+        .validation-message {
+                display: block;
+                margin-top: 6px;
+                font-size: 13px;
+                font-weight: 600;
+        }
+        .validation-message:empty {
+            display: none;
+        }  
     </style>
 </head>
 
@@ -161,6 +170,196 @@
         </div>
 
     </div>
+<script>
+const form = document.querySelector("form");
 
+const inputs = form.querySelectorAll("input");
+
+inputs.forEach(input => {
+
+    const message = document.createElement("small");
+
+    message.className = "validation-message";
+
+    input.parentElement.appendChild(message);
+
+    input.addEventListener("input", () => {
+
+        let valid = true;
+        let text = "";
+
+        if (input.id === "name") {
+
+            if (input.value.trim().length < 3) {
+                valid = false;
+                text = "Name must contain at least 3 characters.";
+            } else {
+                text = "✓ Valid name";
+            }
+
+        }
+
+        else if (input.id === "email") {
+
+            const emailPattern =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(input.value)) {
+                valid = false;
+                text = "Enter a valid email address.";
+            } else {
+                text = "✓ Valid email";
+            }
+
+        }
+
+        else if (input.id === "college") {
+
+            if (input.value.trim().length < 3) {
+                valid = false;
+                text = "College name is too short.";
+            } else {
+                text = "✓ Valid college";
+            }
+
+        }
+
+        else if (input.id === "course") {
+
+            if (input.value.trim().length < 2) {
+                valid = false;
+                text = "Enter a valid course.";
+            } else {
+                text = "✓ Valid course";
+            }
+
+        }
+
+        message.textContent = text;
+
+        if (valid) {
+            message.style.color = "green";
+        } else {
+            message.style.color = "red";
+        }
+
+    });
+
+});
+
+
+// Form submission
+form.addEventListener("submit", function(event) {
+
+    let valid = true;
+
+    inputs.forEach(input => {
+
+        if (!input.value.trim()) {
+            valid = false;
+        }
+
+    });
+
+    if (!valid) {
+        event.preventDefault();
+        alert("Please complete all fields correctly.");
+    }
+
+});
+</script>
+<script>
+function showSuccessPage() {
+
+    document.body.innerHTML = `
+        <div style="
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(135deg,#667eea,#764ba2);
+            padding:20px;
+        ">
+
+            <div style="
+                background:white;
+                padding:45px;
+                border-radius:20px;
+                text-align:center;
+                max-width:500px;
+                width:100%;
+                box-shadow:0 20px 50px rgba(0,0,0,0.25);
+            ">
+
+                <div style="font-size:60px;">✓</div>
+
+                <h1 style="margin:15px 0;">
+                    Registration Successful
+                </h1>
+
+                <p style="color:#666;">
+                    Your student registration has been completed successfully.
+                </p>
+
+                <button
+                    onclick="goBackHome()"
+                    style="
+                        margin-top:20px;
+                        padding:12px 25px;
+                        border:none;
+                        border-radius:10px;
+                        background:#667eea;
+                        color:white;
+                        font-size:16px;
+                        cursor:pointer;
+                    "
+                >
+                    Back to Registration
+                </button>
+
+            </div>
+        </div>
+    `;
+
+    history.pushState(
+        { page: "success" },
+        "",
+        "#success"
+    );
+}
+
+
+function goBackHome() {
+    location.hash = "";
+    location.reload();
+}
+
+
+window.addEventListener("popstate", function() {
+    location.reload();
+});
+// Client-side routing
+window.addEventListener("load", function () {
+
+    if (window.location.hash === "#success") {
+        showSuccessPage();
+    }
+
+});
+
+function showSuccessPage() {
+
+    document.body.innerHTML = `
+        <div class="container">
+            <h1>Registration Successful</h1>
+            <p>Your registration has been completed successfully.</p>
+
+            <button onclick="window.location.href='/'">
+                Back to Registration
+            </button>
+        </div>
+    `;
+}
+</script>
 </body>
 </html>
